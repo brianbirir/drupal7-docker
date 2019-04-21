@@ -11,27 +11,36 @@ services:
       - "6603:3306"
     expose:
       - "3306"
+    networks: 
+      - drupal-net
   webapp:
     container_name: web_app
     build:
       context: .
-    ports: 
-      - "9000:9000"
     expose:
       - "9000"
     depends_on:
       - database
+    networks: 
+      - drupal-net
   nginx:
     container_name: web_server
     image: nginx
     ports:
       - "8008:80"
+    expose:
+      - "80"
     volumes:
       - ./configs/nginx/conf.d:/etc/nginx/conf.d
       - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./web:/var/www/web
     depends_on:
       - webapp
+    networks: 
+      - drupal-net
 
 volumes:
   drupal_db:
+
+networks:
+  drupal-net:
